@@ -1,0 +1,170 @@
+<app-dashboard *ngIf="aggregator$ | async as aggregatorResponse ; else loader">
+    <div class="px-4 sm:px-6 lg:px-8 mb-10">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-2 xl:gap-x-8" role="list">
+            <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1">
+                <app-detail-cards title="Aggregator info">
+                    <div class="flex justify-between" header-title>
+                        <div class="flex gap-x-2">
+                            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5"
+                                 viewBox="0 0 24 24">
+                                <path clip-rule="evenodd"
+                                      d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 00-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 00-2.282.819l-.922 1.597a1.875 1.875 0 00.432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 000 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 00-.432 2.385l.922 1.597a1.875 1.875 0 002.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 002.28-.819l.923-1.597a1.875 1.875 0 00-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 000-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 00-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 00-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 00-1.85-1.567h-1.843zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
+                                      fill-rule="evenodd"/>
+                            </svg>
+                            <span >{{'Aggregator Info'|translate}}</span>
+                        </div>
+                        <div *ngIf="keycloakService.isUserInRole(Permissions.UPDATE_AGGREGATOR)">
+                            <app-aggregator-update
+                                [aggregator]="aggregatorResponse?.data"/>
+                        </div>
+                    </div>
+                    <div body>
+                        <div class="flex justify-between gap-x-4 py-2">
+                            <dt class="text-gray-500">{{'Code Aggregator'|translate}}</dt>
+                            <dd
+                                class="rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/10">{{aggregatorResponse?.data?.codeAggregator}}</dd>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-2">
+                            <dt class="text-gray-500">Description</dt>
+                            <dd
+                                class="text-gray-700">{{aggregatorResponse?.data?.description}}</dd>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-2">
+                            <dt class="text-gray-500" >{{'Created At'|translate}}</dt>
+                            <dd
+                                class="text-gray-700">{{aggregatorResponse?.data?.createdAt | date }}</dd>
+                        </div>
+                    </div>
+                </app-detail-cards>
+            </dl>
+
+            <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                    <dt class="truncate text-sm font-medium text-gray-500" >{{'Credit Balance'|translate}}</dt>
+                    <dd
+                        class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{{ aggregatorResponse?.data?.creditAccount?.balance | customCurrencyFrPipe: aggregatorResponse?.data?.creditAccount?.currency:'code':'2.2-2':'fr'}}</dd>
+                </div>
+                <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                    <dt class="truncate text-sm font-medium text-gray-500" >{{'Commission Balance'|translate}}</dt>
+                    <dd
+                        class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{{ aggregatorResponse?.data?.commissionAccount?.balance | customCurrencyFrPipe: aggregatorResponse?.data?.commissionAccount?.currency:'code':'2.2-2':'fr' }}</dd>
+                </div>
+                <div *ngIf="keycloakService.isUserInRole(Permissions.SHOW_SYSTEM_STATS)" class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:col-span-2 sm:p-6">
+                    <dt class="truncate text-sm font-medium text-gray-500" >{{'Generated Commission'|translate}}</dt>
+                    <dd
+                        *ngIf="generatedCommission$ | async as commission ; else textLoader"
+                        class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{{ commission.data ? (commission.data.value | customCurrencyFrPipe: commission?.data?.currency:'code':'2.2-2':'fr') : 0  }}</dd>
+                </div>
+            </dl>
+        </div>
+
+    </div>
+    <div class="px-4 sm:px-6 lg:px-8 mb-10">
+
+        <app-tab-container>
+            <app-tab-item  [tabTitle]="'Aggregator Stats' | translate" *ngIf="keycloakService.isUserInRole(Permissions.SHOW_AGGREGATOR_STATS)" >
+                <app-stats-by-aggregator [aggregator]="aggregatorResponse.data"/>
+            </app-tab-item>
+            <app-tab-item [tabTitle]="'Credit account operations' | translate"  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_ACCOUNT_OPERATION)" >
+                <app-account-operations
+                    [accountSlug]="aggregatorResponse?.data?.creditAccount?.slug" [title]="titleCreditAccount"/>
+            </app-tab-item>
+            <app-tab-item [tabTitle]="'Commission account operations' | translate" *ngIf="keycloakService.isUserInRole(Permissions.INDEX_ACCOUNT_OPERATION)" >
+                <app-account-operations
+                    [accountSlug]="aggregatorResponse?.data?.commissionAccount?.slug" [title]="titleCommissionAccount"/>
+            </app-tab-item>
+            <app-tab-item [tabTitle]="'Commission Plans' | translate" *ngIf="keycloakService.isUserInRole(Permissions.INDEX_COMMISSION_PLAN)" >
+                <app-commission-plan-index
+                    [code]="aggregatorResponse.data.codeAggregator"
+                    [title]="titleCommissionPlan"
+                    [type]="Commissionable.aggregator"/>
+            </app-tab-item>
+        </app-tab-container>
+    </div>
+</app-dashboard>
+
+<ng-template #loader>
+    <app-dashboard>
+        <div class="px-4 sm:px-6 lg:px-8 mb-10">
+            <div class="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-2 xl:gap-x-8" role="list">
+                <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1">
+                    <app-detail-cards title="Aggregator informations">
+                        <div class="flex justify-between" header-title>
+                            <div class="flex gap-x-2">
+                                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5"
+                                     viewBox="0 0 24 24">
+                                    <path clip-rule="evenodd"
+                                          d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 00-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 00-2.282.819l-.922 1.597a1.875 1.875 0 00.432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 000 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 00-.432 2.385l.922 1.597a1.875 1.875 0 002.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 002.28-.819l.923-1.597a1.875 1.875 0 00-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 000-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 00-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 00-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 00-1.85-1.567h-1.843zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
+                                          fill-rule="evenodd"/>
+                                </svg>
+                                <span >{{'Aggregator Info'|translate}}</span>
+                            </div>
+                            <div>
+                                <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                            </div>
+                        </div>
+                        <div body>
+                            <div class="flex justify-between gap-x-4 py-2">
+                                <dt class="text-gray-500" >{{'Code Aggregator'|translate}}</dt>
+                                <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                            </div>
+                            <div class="flex justify-between gap-x-4 py-2">
+                                <dt class="text-gray-500">Description</dt>
+                                <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                            </div>
+                            <div class="flex justify-between gap-x-4 py-2">
+                                <dt class="text-gray-500"  >{{'Created At'|translate}}</dt>
+                                <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                            </div>
+                        </div>
+                    </app-detail-cards>
+                </dl>
+
+                <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt class="truncate text-sm font-medium text-gray-500" >{{'Credit Balance'|translate}}</dt>
+                        <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                    </div>
+                    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt class="truncate text-sm font-medium text-gray-500" >{{'Commission Balance'|translate}}</dt>
+                        <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                    </div>
+                </dl>
+            </div>
+        </div>
+        <div class="px-4 sm:px-6 lg:px-8 mb-10">
+
+            <app-tab-container>
+                <app-tab-item tabTitle="Aggregator Stats">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+                <app-tab-item tabTitle="Credit account operations">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+                <app-tab-item tabTitle="Commission account operations">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+                <app-tab-item tabTitle="Commission Plans">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+            </app-tab-container>
+        </div>
+    </app-dashboard>
+</ng-template>
+<ng-template #textLoader>
+    <div class="max-w-sm animate-pulse" role="status">
+        <div class="h-3 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-2.5"></div>
+    </div>
+</ng-template>
+
+<ng-template #itemsloader>
+    <div class="max-w-sm animate-pulse" role="status">
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-ful mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <span class="sr-only" >{{'Loading'|translate}}...</span>
+    </div>
+</ng-template>

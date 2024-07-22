@@ -1,0 +1,25 @@
+<div class="grid grid-cols-1 lg:grid-cols-2">
+    <div class="truncate text-sm font-medium text-gray-500">{{'Stats By Credit Type'|translate}}</div>
+    <div class="justify-self-end">
+        <label class="sr-only" for="periodSelect">{{'Select Period'|translate}}</label>
+        <select (change)="onPeriodChange($event)" class="rounded-md" id="periodSelect">
+            <option value="7">{{'Last'|translate}} {{selectedPeriod}} {{'Days'|translate}} </option>
+            <option value="30">{{'Last 30 Days'|translate}}</option>
+            <option value="90">{{'Last 90 Days'|translate}}</option>
+            <option value="180">{{'Last 180 Days'|translate}}</option>
+        </select>
+    </div>
+    <div class="mt-5 gap-5 w-full grid grid-cols-1 lg:grid-cols-2 col-span-2 " *ngIf="data$ | async as metricResponse">
+        <div class="col-span-2 lg:col-span-1 overflow-hidden rounded-lg px-4 py-5 bg-white sm:p-6 flex flex-col justify-self-start" *ngFor="let metric of metricResponse.data">
+          <dt class="text-sm font-medium leading-6 text-gray-500 justify-self-start">{{ metric.type}}</dt>
+          <dd class="text-xs font-medium text-gray-700 justify-self-end">{{ metric.volume}}</dd>
+          <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ metric.flux}}</dd>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

@@ -1,0 +1,60 @@
+<div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+        <p class="mt-2 text-sm text-gray-700" >{{'A list of all provision requests'|translate}}.</p>
+    </div>
+
+    <div class="flex items-end gap-2">
+        <app-lender-provision-create [codeLender]="codeLender" *ngIf="keycloakService.isUserInRole(Permissions.STORE_LENDER_PROVISION)"/>
+        <app-export-table [data$]="allData$" [fileName]="exportFileName" [headers]="exportHeaders" *ngIf="keycloakService.isUserInRole(Permissions.EXPORT_LENDER_PROVISION)"></app-export-table>
+    </div>
+</div>
+<app-shared-paginated-resource
+    (pageChange)="goToPage($event.number)"
+    *ngIf="page$ | async as pageResponse ; else itemsloader" [(page)]="pageResponse.data">
+    <table class="min-w-full divide-y divide-gray-300">
+        <thead class="bg-gray-100">
+        <tr>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 sm:pl-6" scope="col" >{{'Amount'|translate}}</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 sm:pl-6" scope="col" >{{'Fees'|translate}}</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 sm:pl-6" scope="col" >{{'Voucher'|translate}}</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900" scope="col">Status</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 hidden lg:table-cell md:table xl:table-cell"
+                scope="col">
+                {{'Created At'|translate}}
+            </th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white">
+        <tr *ngFor="let provisionRequest of pageResponse?.data?.content">
+            <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-500 sm:pl-6">{{ provisionRequest.amount | customCurrencyFrPipe:null:null:'2.2-2':'fr'  }}</td>
+            <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-500 sm:pl-6">{{ (provisionRequest.fees == null ? 0 : provisionRequest.fees) | customCurrencyFrPipe:null:null:'2.2-2':'fr'  }}</td>
+            <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-500">
+                <ul *ngIf="keycloakService.isUserInRole(Permissions.SHOW_MEDIA); else notAllowed" >
+                    <li *ngFor="let media of provisionRequest.medias">
+                        <app-shared-media-download [token]="media.token">
+                            {{'Download voucher'|translate}}
+                        </app-shared-media-download>
+                    </li>
+                </ul>
+                <ng-template #notAllowed> <span class="text-xs font-bold text-orange-500" >{{'not available'|translate}}</span></ng-template>
+            </td>
+            <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-500">{{ provisionRequest.status }}</td>
+            <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-500">{{ provisionRequest.createdAt | date:'dd/MM/yy HH:mm:ss' }}</td>
+            <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-500">
+                <app-lender-provision-validation [disabled]="provisionRequest.status !== 'INITIATED'"
+                                                 [provisionRequest]="provisionRequest"/>
+            </td>
+
+        </tr>
+        <tr *ngIf="pageResponse?.data?.content.length == 0">
+            <td class="whitespace-nowrap py-2 text-center text-sm text-gray-500 sm:pl-0" colspan="6" >{{' No data available'|translate}}
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</app-shared-paginated-resource>
+<ng-template #itemsloader>
+    <app-table-loader></app-table-loader>
+</ng-template>

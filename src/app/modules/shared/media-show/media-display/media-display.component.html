@@ -1,0 +1,14 @@
+<!--<div>
+    <button (click)="getMedia()" class="text-blue-600 underline">
+        <ng-content></ng-content>
+    </button>
+</div>-->
+
+<app-shared-modal [show]="displayModal">
+
+<div *ngIf="mediaUrl">
+    <img [src]="mediaUrl" alt="Media">
+</div>
+<div *ngIf="!mediaUrl">No media available</div>
+</app-shared-modal>
+

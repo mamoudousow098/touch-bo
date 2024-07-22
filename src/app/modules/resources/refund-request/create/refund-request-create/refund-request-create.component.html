@@ -1,0 +1,52 @@
+<button *ngIf=" keycloakService.isUserInRole(Permissions.INITIATE_REFUND_REQUEST)"
+    (click)="toggleModal()"
+    class="rounded-full bg-blue-500 p-1 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+    type="button">
+    <svg aria-hidden="true" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+        <path
+            d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/>
+    </svg>
+</button>
+
+<app-shared-modal [show]="displayModal">
+    <div class="px-4 sm:px-6 lg:px-8 py-4">
+        <form (ngSubmit)="onSubmit()" [formGroup]="form" class="w-full items-center">
+            <div class="space-y-12">
+                <div class="border-b border-gray-900/10 pb-12">
+                    <h2 class="text-base font-semibold leading-7 text-gray-900" >{{'Create a new credit request'|translate}}</h2>
+                    <div class="mt-5">
+                        <label class="block text-sm font-medium leading-6 text-gray-900" for="amount" >{{'Amount'|translate}}</label>
+                        <div class="mt-2">
+                            <input
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                formControlName="amount"
+                                id="amount"
+                                type="number">
+                            <p *ngIf="form.get('amount')?.errors?.['serverError']" class="text-xs text-red-500">
+                                {{ form.get('amount')?.errors?.['serverError'] }}
+                            </p>
+                        </div>
+                    </div>          
+                    <app-shared-warning *ngIf="form.hasError('message')">
+                        {{ form.getError('message') }}
+                    </app-shared-warning>
+
+                </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+                <button
+                    (click)="toggleModal()"
+                    class="text-sm font-semibold leading-6 text-gray-900" type="button" > {{'Cancel'|translate}}
+                </button>
+                <button
+                    [disabled]="!form.valid"
+                    [ngClass]="!form.valid? 'bg-gray-400':'bg-blue-600 hover:bg-blue-500 focus-visible:outline-blue-600'"
+                    class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                    type="submit" >
+                    {{'Save'|translate}}
+                </button>
+            </div>
+        </form>
+    </div>
+</app-shared-modal>

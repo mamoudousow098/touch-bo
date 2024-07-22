@@ -1,0 +1,52 @@
+<button (click)="toggleModal()" *ngIf="keycloakService.isUserInRole(Permissions.VALIDATE_LENDER_PROVISION)"
+        [disabled]="disabled"
+        class="inline-flex items-center gap-x-1.5 rounded-md bg-blue-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:bg-gray-400"
+        type="button" >
+    <svg aria-hidden="true" class="-ml-0.5 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+        <path clip-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+              fill-rule="evenodd"/>
+    </svg>
+    {{'Validate'|translate}}
+</button>
+
+<app-shared-modal [show]="displayModal">
+    <div class="px-4 sm:px-6 lg:px-8 py-4">
+        <form (ngSubmit)="validate()" [formGroup]="form" class="w-full items-center">
+            <div class="space-y-12">
+                <div class="border-b border-gray-900/10 pb-6">
+                    <h2 class="text-base font-semibold leading-7 text-gray-900" >{{'Validation Status'|translate}}</h2>
+                    <div class="mt-5">
+                        <label class="block text-sm font-medium leading-6 text-gray-900" for="status" >{{'Status'|translate}}</label>
+                        <div class="mt-2">
+                            <select
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                formControlName="status"
+                                id="status">
+                                <option value="" >{{'Select a status'|translate}}</option>
+                                <option value="validated" >{{'Validate'|translate}}</option>
+                                <option value="rejected" >{{'Reject'|translate}}</option>
+                            </select>
+
+                            <p *ngIf="form.get('status')?.errors?.['serverError']" class="text-xs text-red-500">
+                                {{ form.get('status')?.errors?.['serverError'] }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-x-6">
+                <button
+                    (click)="toggleModal()"
+                    class="text-sm font-semibold leading-6 text-gray-900" type="button" >{{'Cancel'|translate}}
+                </button>
+                <button
+                    class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                    type="submit">
+                    {{'Save'|translate}}
+                </button>
+            </div>
+        </form>
+    </div>
+</app-shared-modal>

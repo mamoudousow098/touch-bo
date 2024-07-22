@@ -1,0 +1,29 @@
+<div class="relative inline-block text-left">
+    <div>
+        <button (click)="toggleDisplay()" aria-expanded="true"
+                aria-haspopup="true"
+                class="relative items-center rounded bg-white px-2 py-2 text-gray-400  hover:bg-gray-50 focus:z-10"
+                data-bs-toggle="dropdown" id="option-menu-button"
+                type="button">
+            <span class="sr-only">Open options</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                 stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <div
+        #container
+        [hidden]="hide"
+        aria-labelledby="menu-button"
+        aria-orientation="vertical"
+        class="absolute right-0 z-10 mt-2 w-35 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" tabindex="-1">
+        <div class="py-1" role="none">
+            <ng-content/>
+        </div>
+    </div>
+</div>

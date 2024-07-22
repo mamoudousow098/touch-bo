@@ -1,0 +1,286 @@
+<app-dashboard *ngIf="wholesaler$ | async as wholesalerResponse ; else loader">
+    <div class="px-4 sm:px-6 lg:px-8 mb-10">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-2 xl:gap-x-8" role="list">
+            <app-detail-cards>
+                <div class="flex justify-between" header-title>
+                    <div class="flex gap-x-2">
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5"
+                             viewBox="0 0 24 24">
+                            <path clip-rule="evenodd"
+                                  d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 00-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 00-2.282.819l-.922 1.597a1.875 1.875 0 00.432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 000 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 00-.432 2.385l.922 1.597a1.875 1.875 0 002.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 002.28-.819l.923-1.597a1.875 1.875 0 00-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 000-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 00-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 00-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 00-1.85-1.567h-1.843zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
+                                  fill-rule="evenodd"/>
+                        </svg>
+                        <span >{{'Wholesaler Info'|translate}}</span>
+                    </div>
+                    <div>
+                        <ng-container *ngIf="aggregators$ | async as response ; else itemsloader  ">
+                            <app-wholesaler-update *ngIf="wholesaler$ | async as wholesalerResponse;"
+                                                   [aggregators$]="response.data"
+                                                   [wholesaler]="wholesalerResponse?.data"/>
+                        </ng-container>
+                    </div>
+                    <app-agents-bulk-settings *ngIf="wholesaler$ | async as wholesalerResponse ; else textLoader"
+                                              [wholesaler]="wholesalerResponse?.data"/>
+                </div>
+                <div body>
+                    <div class="flex justify-between gap-x-4 py-2">
+                        <dt class="text-gray-500" >{{'Code Wholesaler'|translate}}</dt>
+                        <dd
+                            class="rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/10">{{ wholesalerResponse?.data?.codeWholesaler }}</dd>
+                    </div>
+                    <div class="flex justify-between gap-x-4 py-2">
+                        <dt class="text-gray-500" >Description</dt>
+                        <dd
+                            class="text-gray-700">{{ wholesalerResponse?.data?.description }}</dd>
+                    </div>
+                    <div class="flex justify-between gap-x-4 py-2">
+                        <dt class="text-gray-500" >{{'Created At'|translate}}</dt>
+                        <dd
+                            class="text-gray-700">{{ wholesalerResponse?.data?.createdAt | date:'dd/MM/yy HH:mm:ss' }}</dd>
+                    </div>
+                    <div class="flex justify-between gap-x-4 py-2">
+                        <dt class="text-gray-500">Active</dt>
+                        <dd class="text-gray-700">
+                            <app-active-badge [active]="wholesalerResponse?.data?.active"></app-active-badge>
+                        </dd>
+                    </div>
+                </div>
+            </app-detail-cards>
+            <app-detail-cards>
+                <div class="flex gap-x-2" header-title>
+                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5"
+                         viewBox="0 0 24 24">
+                        <path
+                            d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                    </svg>
+                    <span >{{'Accounts Balances'|translate}}</span>
+                    <div class="justify-end w-full flex" *ngIf="wholesaler$ | async as wholesalerResponse;">
+                        <app-refund class=" justify-end mr-1" *ngIf="(wholesalerResponse?.data.outstandingAccount?.balance < 0)"
+                        [codeWholesaler]="wholesalerResponse?.data.codeWholesaler"/>
+
+                        <app-activate class=" justify-end" 
+                        [codeWholesaler]="wholesalerResponse?.data.codeWholesaler"/>
+                    </div>
+                    
+                </div>
+                <div body>
+                    <div *ngIf="(wholesalerResponse?.data.overdraft != null && wholesalerResponse?.data.outstandingAccount?.active); else deActivatedDMA">
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Overdraft Limit Amount'|translate}}</dt>
+                            <dd
+                                class="text-gray-700 text-lg font-bold">{{ wholesalerResponse?.data?.overdraft}}</dd>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Agents Recovery Period'|translate}}</dt>
+                            <dd
+                                class="text-gray-700 text-lg font-bold">{{ wholesalerResponse?.data?.agentRecoveryPeriod  }}</dd>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Commission Account'|translate}}</dt>
+                            <dd
+                                class="text-gray-700 text-lg font-bold">{{ wholesalerResponse?.data?.commissionAccount.balance | customCurrencyFrPipe: wholesalerResponse?.data?.commissionAccount.currency:'code':'2.2-2':'fr' }}</dd>
+                        </div>
+                        
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Outstanding Account'|translate}}</dt>
+                            <dd
+                                class="text-gray-700 text-lg font-bold">{{ wholesalerResponse?.data?.outstandingAccount?.balance | customCurrencyFrPipe: wholesalerResponse?.data?.outstandingAccount.currency:'code':'2.2-2':'fr'  }}</dd>
+                        </div>
+                    </div>
+                    <ng-template  #deActivatedDMA>
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Credit Account'|translate}}</dt>
+                            <dd
+                                class="text-gray-700 text-lg font-bold">{{ wholesalerResponse?.data?.creditAccount.balance | customCurrencyFrPipe: wholesalerResponse?.data?.creditAccount.currency:'code':'2.2-2':'fr'  }}</dd>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Commission Account'|translate}}</dt>
+                            <dd
+                                class="text-gray-700 text-lg font-bold">{{ wholesalerResponse?.data?.commissionAccount.balance | customCurrencyFrPipe: wholesalerResponse?.data?.commissionAccount.currency:'code':'2.2-2':'fr' }}</dd>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Operational Account'|translate}}</dt>
+                            <dd
+                                class="text-gray-700 text-lg font-bold">{{ wholesalerResponse?.data?.aggregatorWholesaler.account?.balance | customCurrencyFrPipe: wholesalerResponse?.data?.aggregatorWholesaler?.account.currency:'code':'2.2-2':'fr'  }}</dd>
+                        </div>
+                    </ng-template>
+                    
+                </div>
+            </app-detail-cards>
+        </div>
+    </div>
+
+    <div class="px-4 sm:px-6 lg:px-8 mb-10">
+        <app-tab-container>
+            <app-tab-item [tabTitle]="'Wholesaler Stats' | translate" *ngIf="keycloakService.isUserInRole(Permissions.SHOW_WHOLESALER_STATS)">
+                <div class="rounded-lg mt-5">
+                    <div *ngIf="wholesaler$ | async as wholesalerResponse;"
+                         class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                        <div class="sm:col-span-1 py-5 bg-white px-3 border border-gray-50 rounded-md shadow">
+                            <app-credit-wholesaler-count-chart
+                                [wholesalerCode]="wholesalerResponse.data.codeWholesaler"/>
+                        </div>
+                        <div class="sm:col-span-1 py-5 bg-white px-3 border border-gray-50 rounded-md shadow">
+                            <app-credit-count-by-agent-chart [wholesalerCode]="wholesalerResponse.data.codeWholesaler"/>
+                        </div>
+                        <div class="sm:col-span-1 py-5 bg-white px-3 border border-gray-50 rounded-md shadow">
+                            <app-credit-wholesaler-flux-chart
+                                [wholesalerCode]="wholesalerResponse.data.codeWholesaler"/>
+                        </div>
+                        <div class="sm:col-span-1 py-5 bg-white px-3 border border-gray-50 rounded-md shadow">
+                            <app-credit-flux-by-agent-chart [wholesalerCode]="wholesalerResponse.data.codeWholesaler"/>
+                        </div>
+                    </div>
+                </div>
+            </app-tab-item>
+            <app-tab-item  [tabTitle]="'Loan request' | translate" *ngIf="keycloakService.isUserInRole(Permissions.INDEX_LOAN_REQUEST)">
+                <app-loan-request-index [codeWholesaler]="wholesalerResponse?.data?.codeWholesaler"
+                                        [title]="loanTitle"></app-loan-request-index>
+            </app-tab-item>
+
+            <app-tab-item  [tabTitle]="'Provision Request' | translate"  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_WHOLESALER_PROVISION)">
+                <app-wholesaler-provision-index [codeWholesaler]="wholesalerResponse?.data?.codeWholesaler"
+                                                [title]="provisionTitle"/>
+            </app-tab-item>
+            <app-tab-item  [tabTitle]="'Credit account operations' | translate" *ngIf="keycloakService.isUserInRole(Permissions.INDEX_ACCOUNT_OPERATION)">
+                <app-account-operations [accountSlug]="wholesalerResponse?.data?.creditAccount?.slug"
+                                        [title]="creditTitle"
+                                        title="Credit account"/>
+            </app-tab-item>
+
+            <app-tab-item [tabTitle]="'Commission account operations' | translate"  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_ACCOUNT_OPERATION)">
+                <app-account-operations [accountSlug]="wholesalerResponse?.data?.commissionAccount?.slug"
+                                        [title]="commissionTitle"
+                                        title="Commission account"/>
+            </app-tab-item>
+            <app-tab-item [tabTitle]="'Operational account operations' | translate"  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_ACCOUNT_OPERATION)">
+                <app-account-operations [accountSlug]="wholesalerResponse?.data?.aggregatorWholesaler?.account?.slug"
+                                        [title]="operationalTitle"
+                                        title="Operational account"/>
+            </app-tab-item>
+            <app-tab-item  [tabTitle]="'Commission Plan' | translate"  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_COMMISSION_PLAN)">
+                <app-commission-plan-index [code]="wholesalerResponse?.data?.codeWholesaler"
+                                           [title]="comPlanTitle"
+                                           [type]="Commissionable.wholesaler"/>
+            </app-tab-item>
+            <app-tab-item  [tabTitle]="'Validation Stage' | translate"  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_VALIDATION_STAGE)">
+                <app-validation-stage-index [code]="wholesalerResponse?.data?.codeWholesaler"/>
+            </app-tab-item>
+        </app-tab-container>
+    </div>
+</app-dashboard>
+
+<ng-template #loader>
+    <app-dashboard>
+        <div class="px-4 sm:px-6 lg:px-8 mb-10">
+            <ul class="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-2 xl:gap-x-8" role="list">
+                <app-detail-cards>
+                    <div class="flex justify-between" header-title>
+                        <div class="flex gap-x-2">
+                            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5"
+                                 viewBox="0 0 24 24">
+                                <path clip-rule="evenodd"
+                                      d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 00-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 00-2.282.819l-.922 1.597a1.875 1.875 0 00.432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 000 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 00-.432 2.385l.922 1.597a1.875 1.875 0 002.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 002.28-.819l.923-1.597a1.875 1.875 0 00-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 000-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 00-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 00-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 00-1.85-1.567h-1.843zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
+                                      fill-rule="evenodd"/>
+                            </svg>
+                            <span >{{'Wholesaler Info'|translate}}</span>
+                        </div>
+                        <div>
+                            <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                        </div>
+                    </div>
+
+                    <div body>
+                        <div class="flex justify-between gap-x-4 py-2">
+                            <dt class="text-gray-500" >{{'Code Wholesaler'|translate}}</dt>
+                            <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-2">
+                            <dt class="text-gray-500">Description</dt>
+                            <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-2">
+                            <dt class="text-gray-500" >{{'Created At'|translate}}</dt>
+                            <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-2">
+                            <dt class="text-gray-500">Active</dt>
+                            <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                        </div>
+                    </div>
+                </app-detail-cards>
+                <app-detail-cards>
+                    <div class="flex gap-x-2" header-title>
+
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5"
+                             viewBox="0 0 24 24">
+                            <path
+                                d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"/>
+                        </svg>
+                        <span >{{'Accounts Balances'|translate}}</span>
+                    </div>
+                    <div body>
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Credit Account'|translate}}</dt>
+                            <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Commission Account'|translate}}</dt>
+                            <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                        </div>
+                        <div class="flex justify-between gap-x-4 py-3">
+                            <dt class="text-gray-500" >{{'Operational Account'|translate}}</dt>
+                            <ng-container *ngTemplateOutlet="textLoader"></ng-container>
+                        </div>
+                    </div>
+                </app-detail-cards>
+            </ul>
+        </div>
+
+        <div class="px-4 sm:px-6 lg:px-8 mb-10">
+            <app-tab-container>
+                <app-tab-item tabTitle="Loan request">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+
+                <app-tab-item tabTitle="Provision Request">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+                <app-tab-item tabTitle="Credit account's operations">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+
+                <app-tab-item tabTitle="Commission account's operations">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+                <app-tab-item tabTitle="Operational account's operations">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+                <app-tab-item tabTitle="Commission Plan">
+                    <ng-container *ngTemplateOutlet="itemsloader"></ng-container>
+                </app-tab-item>
+            </app-tab-container>
+        </div>
+    </app-dashboard>
+</ng-template>
+<ng-template #textLoader>
+    <div class="max-w-sm animate-pulse" role="status">
+        <div class="h-6 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-2.5"></div>
+    </div>
+</ng-template>
+
+<ng-template #itemsloader>
+    <div class="max-w-sm animate-pulse" role="status">
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-ful mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <span class="sr-only" >{{'Loading'|translate}}...</span>
+    </div>
+</ng-template>

@@ -1,0 +1,118 @@
+<button *ngIf="keycloakService.isUserInRole(Permissions.STORE_LOAN_REQUEST)"
+    (click)="toggleModal()"
+    class="block rounded-md bg-blue-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+    type="button" >
+    {{'New Loan Request'|translate}}
+</button>
+
+<app-shared-modal [show]="displayModal">
+    <div class="px-4 sm:px-6 lg:px-8 py-4">
+        <form (ngSubmit)="create()" [formGroup]="form" class="w-full items-center">
+            <div class="space-y-12">
+                <div class="border-b border-gray-900/10 pb-12">
+                    <h2 class="text-base font-semibold leading-7 text-gray-900" >{{'Create a new loan request'|translate}}</h2>
+
+                    <div class="mt-5">
+                        <label class="block text-sm font-medium leading-6 text-gray-900" for="codeLender" >{{'Lender'|translate}}</label>
+                        <div class="mt-2">
+                            <select
+                                (change)="changeLender($event)"
+                                *ngIf="lenders$ | async as lenders ; else textLoader"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                formControlName="codeLender"
+                                id="codeLender">
+                                <option value="" >{{'Select a lender'|translate}}</option>
+                                <option
+
+                                    *ngFor="let lender of lenders"
+                                    [value]="lender.codeLender">{{ lender.description }}</option>
+                            </select>
+
+                            <p *ngIf="form.get('codeLender')?.errors?.['serverError']" class="text-xs text-red-500">
+                                {{ form.get('codeLender')?.errors?.['serverError'] }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <label class="block text-sm font-medium leading-6 text-gray-900" for="amount" >{{'Amount'|translate}}</label>
+                        <div class="mt-2">
+                            <input
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                formControlName="amount"
+                                id="amount"
+                                type="text">
+                            <p *ngIf="form.get('amount')?.errors?.['serverError']" class="text-xs text-red-500">
+                                {{ form.get('amount')?.errors?.['serverError'] }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <label class="block text-sm font-medium leading-6 text-gray-900" for="recoveryPeriodInDays" >
+                            {{'Recovery period in days'|translate}}</label>
+                        <div class="mt-2">
+                            <input
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                formControlName="recoveryPeriodInDays"
+                                id="recoveryPeriodInDays"
+                                type="text">
+                            <p *ngIf="form.get('recoveryPeriodInDays')?.errors?.['serverError']"
+                               class="text-xs text-red-500">
+                                {{ form.get('recoveryPeriodInDays')?.errors?.['serverError'] }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <label class="block text-sm font-medium leading-6 text-gray-900" for="recoveryAmountByPeriod" >
+                            {{'Recovery amount by period'|translate}}</label>
+                        <div class="mt-2">
+                            <input
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                formControlName="recoveryAmountByPeriod"
+                                id="recoveryAmountByPeriod"
+                                type="text">
+                            <p *ngIf="form.get('recoveryAmountByPeriod')?.errors?.['serverError']"
+                               class="text-xs text-red-500">
+                                {{ form.get('recoveryAmountByPeriod')?.errors?.['serverError'] }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <label class="block text-sm font-medium leading-6 text-gray-900"
+                               for="description">Description</label>
+                        <div class="mt-2">
+                            <textarea
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                formControlName="description"
+                                id="description"
+                                rows="3"></textarea>
+                            <p *ngIf="form.get('description')?.errors?.['serverError']" class="text-xs text-red-500">
+                                {{ form.get('description')?.errors?.['serverError'] }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+                <button
+                    (click)="toggleModal()"
+                    class="text-sm font-semibold leading-6 text-gray-900" type="button" >{{'Cancel'|translate}}
+                </button>
+                <button
+                    [disabled]="!form.valid || formDisabled"
+                    [ngClass]="!form.valid || formDisabled? 'bg-gray-400':'bg-blue-600 hover:bg-blue-500 focus-visible:outline-blue-600'"
+                    class="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 "
+                    type="submit">
+                    {{'Save'|translate}}
+                </button>
+            </div>
+        </form>
+    </div>
+</app-shared-modal>
+
+<ng-template #textLoader>
+    <div class="max-w-sm animate-pulse" role="status">
+        <div class="h-6 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-2.5"></div>
+    </div>
+</ng-template>

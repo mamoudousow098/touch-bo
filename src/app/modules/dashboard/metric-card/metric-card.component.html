@@ -1,0 +1,20 @@
+<div class="relative  rounded-sm bg-white px-4 pt-4 my-1 shadow-sm grid justify-items-stretch">
+    <div class="grid justify-items-stretch pb-2">
+        <ng-content select="[icon]"></ng-content>
+        <dt class="text-sm font-medium text-gray-500 justify-self-end mb-1">{{title}}</dt>
+        <dd *ngIf="metric$ | async as metric  ; else textLoader"
+            class="mt-1 justify-self-end">
+            <div class="text-3xl font-semibold tracking-tight text-gray-900">
+                {{ (metric?.flux ? metric.flux: 0) | customCurrencyFrPipe:currency:'code':'2.2-2':'fr' }}                    
+                <!--span class="ml-2 text-sm font-medium text-gray-500">from {{ metric?.volume}} requests</span-->
+            </div>
+        </dd>        
+    </div>
+</div>
+
+
+<ng-template #textLoader>
+    <div class="max-w-sm animate-pulse" role="status">
+        <div class="h-3 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-2.5"></div>
+    </div>
+</ng-template>

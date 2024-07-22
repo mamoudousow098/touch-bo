@@ -1,0 +1,23 @@
+service: "%SERVICE_NAME%"
+runtime: python39
+app_engine_apis: true
+#api_version: 1
+#threadsafe: true
+
+handlers:
+    -   url: /(.*\.(gif|png|jpg|css|js|json)(|\.map))$
+        static_files: dist/credit-digital-front/\1
+        upload: dist/credit-digital-front/(.*)(|\.map)
+
+    -   url: /(.*\.(json)(|\.map))$
+        static_files: dist/credit-digital-front/assets/i18n\1
+        upload: dist/credit-digital-front/(.*)(|\.map)
+
+    -   url: /(.*)
+        static_files: dist/credit-digital-front/index.html
+        upload: dist/credit-digital-front/index.html
+
+
+
+
+

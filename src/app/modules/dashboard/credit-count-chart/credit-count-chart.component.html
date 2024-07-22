@@ -1,0 +1,10 @@
+<div class="flex justify-end">
+    <label class="sr-only" for="periodSelect">Select Period</label>
+    <app-period-select-dialog (onPeriodChange)="onPeriodChange($event)" [defaultPeriod]="7"/>
+</div>
+<div class="">
+    <div class="h-[300px] md:h-[400px] lg:h-[500px]">
+        <canvas id="creditCountChart" ></canvas>        
+    </div>
+</div>
+

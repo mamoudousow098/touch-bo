@@ -1,0 +1,105 @@
+<app-dashboard>
+    <div class="px-4 sm:px-6 lg:px-8">
+        <div class="sm:flex sm:items-center">
+            <div class="sm:flex-auto">
+                <div class="flex gap-x-2">
+                    <h1 class="text-base font-semibold leading-6 text-gray-900" >{{'Aggregator'|translate}}</h1>
+                    <app-aggregator-create />
+                </div>
+                <p class="mt-2 text-sm text-gray-700" >{{'A list of all aggregators'|translate}}.</p>
+            </div>
+            <div class="flex items-end gap-2">
+                <app-export-table *ngIf="keycloakService.isUserInRole(Permissions.EXPORT_AGGREGATOR)"
+                                  [data$]="allData$" [fileName]="exportFileName"
+                                  [headers]="exportHeaders"></app-export-table>
+            </div>
+        </div>
+        <app-shared-paginated-resource (pageChange)="goToPage($event.number)"
+                                       *ngIf="page$ | async as pageResponse ; else itemsloader"
+                                       [page]="pageResponse.data">
+            <table class="min-w-full divide-y divide-gray-300">
+                <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 hidden lg:table-cell xl:table-cell"
+                        scope="col">
+                        Code
+                    </th>
+                    <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900" scope="col">Description</th>
+                    <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden lg:table-cell xl:table-cell"
+                        scope="col" >
+                        {{'Credit Balance'|translate}}
+                    </th>
+                    <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden lg:table-cell xl:table-cell"
+                        scope="col" >
+                        {{'Commission Balance'|translate}}
+                    </th>
+                    <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden lg:table-cell xl:table-cell"
+                        scope="col" >
+                        {{'Created at'|translate}}
+                    </th>
+                    <th class="relative py-3.5 pl-3 pr-4 sm:pr-6" scope="col">
+                        <span class="sr-only">Actions</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                <tr *ngFor="let aggregator of pageResponse?.data?.content">
+                    <td class="whitespace-nowrap py-2 pl-2 pr-3 text-sm font-medium text-gray-900 sm:pl-6 hidden lg:table-cell xl:table-cell">
+                        <a class="text-blue-600 underline"
+                           routerLink="/aggregator/{{ aggregator.codeAggregator }}">{{ aggregator.codeAggregator }}</a>
+                    </td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ aggregator.description }}</td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell xl:table-cell">{{ aggregator.creditAccount.balance | customCurrencyFrPipe:aggregator.creditAccount.currency:'code':'2.2-2':'fr' }}</td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell xl:table-cell">{{ aggregator.commissionAccount?.balance | customCurrencyFrPipe:aggregator.commissionAccount.currency:'code':'2.2-2':'fr' }}</td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell xl:table-cell">{{ aggregator.createdAt | date:'dd/MM/yy HH:mm:ss' }}</td>
+                    <td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                        <div class="inline-flex shadow-sm">
+                            <app-actions-dropdown class="flex flex-wrap">
+
+                                <button *ngIf="keycloakService.isUserInRole(Permissions.SHOW_AGGREGATOR)"
+                                    class="relative flex flex-row-reverse tems-center rounded-l-md bg-white px-2.5 py-1.5 text-sm font-semibold gap-x-1.5 text-gray-900 ml-1 hover:bg-gray-50 focus:z-10"
+                                    routerLink="/aggregator/{{ aggregator.codeAggregator }}"
+                                    type="button" >
+                                    {{'Show'|translate}}
+                                    <svg class="w-5 h-5 text-blue-600 font-bold" fill="none" stroke="currentColor"
+                                         stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"/>
+                                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"
+                                              stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                                <app-aggregator-update *ngIf="keycloakService.isUserInRole(Permissions.UPDATE_AGGREGATOR)" [aggregator]="aggregator"/>
+                                <button *ngIf="keycloakService.isUserInRole(Permissions.DELETE_AGGREGATOR)"
+                                    (click)="confirmDelete(aggregator.codeAggregator)"
+                                    class="relative -ml-px flex flex-row-reverse items-center rounded-r-md bg-white px-2.5 py-1.5 text-sm font-semibold gap-x-1.5 text-gray-900 ml-1 hover:bg-gray-50 focus:z-10"
+                                    type="button" >
+                                    {{'Delete'|translate}}
+                                    <svg class="w-5 h-5 text-orange-600 font-bold" fill="none" stroke="currentColor"
+                                         stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </app-actions-dropdown>
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngIf="pageResponse?.data?.content.length == 0">
+                    <td class="whitespace-nowrap py-2 text-center text-sm text-gray-500 sm:pl-0" colspan="6" >
+                        {{'No data available'|translate}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </app-shared-paginated-resource>
+        <ng-template #itemsloader>
+            <app-table-loader></app-table-loader>
+        </ng-template>
+    </div>
+</app-dashboard>

@@ -1,0 +1,38 @@
+<nav aria-label="Breadcrumb" class="flex px-4 sm:px-6 lg:px-8 py-5">
+    <ol class="flex items-center space-x-2" role="list">
+        <li>
+            <div *ngIf="home">
+                <a class="text-blue-600 hover:text-gray-500" routerLink={{home.routerLink}}>
+                    <svg aria-hidden="true" class="h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path clip-rule="evenodd"
+                              d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z"
+                              fill-rule="evenodd"/>
+                    </svg>
+                    <span class="sr-only" >{{'Home'|translate}}</span>
+                </a>
+            </div>
+        </li>
+        <li *ngIf="items && home" class="text-blue-600 hover:text-gray-500">
+            <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5"
+                 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path clip-rule="evenodd" d="M8.25 4.5l7.5 7.5-7.5 7.5" fill-rule="evenodd"/>
+            </svg>
+        </li>
+        <ng-template [ngForOf]="items" let-item let-last="last" ngFor>
+            <li class="text-gray-400 hover:text-gray-500">
+                <a *ngIf="item.routerLink" [routerLink]="item.routerLink"
+                   class="text-sm font-medium text-blue-600 hover:text-gray-700">{{item.label|translate}}</a>
+                <ng-container *ngIf="!item.routerLink">
+                    <span class="text-sm font-medium text-gray-500 hover:text-gray-700">{{item.label|translate}}</span>
+                </ng-container>
+            </li>
+            <li *ngIf="!last" class="text-blue-600 hover:text-gray-500">
+                <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5"
+                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </li>
+        </ng-template>
+
+    </ol>
+</nav>

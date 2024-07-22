@@ -1,0 +1,14 @@
+<div [ngClass]="{ 'relative z-10': show }" aria-labelledby="modal-title" aria-modal="true" role="dialog">
+    <div
+        [ngClass]="{ hidden: !show, block: show}"
+        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+    <div *ngIf="show" class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-screen items-end justify-center p-4 text-center sm:items-center sm:p-0 lg:pl-72">
+            <div
+                class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all max-w-xl sm:my-24 sm:w-full sm:max-w-xl">
+                <ng-content/>
+            </div>
+        </div>
+    </div>
+</div>

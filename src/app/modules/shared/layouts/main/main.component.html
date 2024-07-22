@@ -1,0 +1,17 @@
+<div>
+    <app-sidebar (sidebarClosed)="toggleMobileSideBar()"
+                 [showMobileSideBar]="showMobileSideBar"/>
+    <div class="lg:pl-72">
+        <app-navbar (openSidebar)="toggleMobileSideBar()"/>
+
+        <div class="px-4 sm:px-6 lg:px-8">
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+
+        <main class="py-5 overflow-hidden">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <ng-content/>
+            </div>
+        </main>
+    </div>
+</div>

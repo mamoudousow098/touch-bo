@@ -1,0 +1,107 @@
+<button *ngIf="keycloakService.isUserInRole(Permissions.UPLOAD_AGENT)"
+    (click)="toggleModal()"
+    class="rounded-full bg-blue-500 p-1 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+    data-tooltip-target="tooltip-agent-importation"
+    type="button">
+    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+         xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" stroke-linecap="round"
+              stroke-linejoin="round"/>
+    </svg>
+</button>
+<app-shared-modal [show]="displayModal" id="modal">
+    <form (ngSubmit)="importFile()" [formGroup]="form" class="w-full items-center">
+        <div class="space-y-12">
+            <div class="border-b border-gray-900/10">
+                <h2 class="text-base font-semibold leading-7 text-gray-900 ml-12 mt-6">Import a list of new or existing
+                    customers</h2>
+
+                <div class="grid grid-cols-1 gap-5 mt-5">
+                    <app-error *ngIf="form.hasError('message')">
+                        {{ form.getError('message') }}
+                    </app-error>
+                    <app-info *ngIf="templateDownloaded && !file" >
+                        {{'Excel template downloaded. Fill it before uploading it'|translate}}.
+                    </app-info>
+                    <a (click)="templateDownloaded = true" *ngIf="!file && !templateDownloaded"
+                       class="relative block w-5/6 rounded-lg border-2 border-dashed border-gray-300 p-12 mx-auto text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" href="/assets/agent-import-template.xlsx"
+                       target="_self"
+                       type="button">
+                        <svg aria-hidden="true" class=" mx-auto h-12 w-12 text-gray-400" fill="none"
+                             stroke="currentColor" viewBox="0 0 48 48">
+                            <path d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" stroke-linecap="round"
+                                  stroke-linejoin="round"/>
+                        </svg>
+                        <span class="mt-2 block text-sm font-semibold text-gray-900" >{{'Upload excel templated'|translate}}.</span>
+                    </a>
+                    <button (click)="chooseFile()" *ngIf="templateDownloaded && !file"
+                            class="relative block w-5/6 rounded-lg border-2 border-dashed border-blue-600 p-12 mx-auto text-center hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            type="button">
+                        <svg aria-hidden="true" class=" mx-auto h-12 w-12 text-gray-400" fill="none"
+                             stroke="currentColor" viewBox="0 0 48 48">
+                            <path d="M8 14v20c0 4.418 7.163 8 16 8 1.381 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v14m0-4c0 4.418-7.163 8-16 8S8 28.418 8 24m32 10v6m0 0v6m0-6h6m-6 0h-6" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2"/>
+                        </svg>
+                        <span class="mt-2 block text-sm font-semibold text-gray-900" >{{'Choose an excel file'|translate}}</span>
+                    </button>
+                    <div *ngIf="file && uploadCompleted == false"
+                         class="relative block w-5/6 rounded-lg border-2 border border-[#3a923c] p-12 mx-auto text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        <svg *ngIf="uploadProgression == false" class="mx-auto h-12 w-12 text-gray-400"
+                             fill="#3a923c" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM155.7 250.2L192 302.1l36.3-51.9c7.6-10.9 22.6-13.5 33.4-5.9s13.5 22.6 5.9 33.4L221.3 344l46.4 66.2c7.6 10.9 5 25.8-5.9 33.4s-25.8 5-33.4-5.9L192 385.8l-36.3 51.9c-7.6 10.9-22.6 13.5-33.4 5.9s-13.5-22.6-5.9-33.4L162.7 344l-46.4-66.2c-7.6-10.9-5-25.8 5.9-33.4s25.8-5 33.4 5.9z"/>
+                        </svg>
+                        <svg *ngIf="uploadProgression == true" class="mx-auto h-12 w-12 text-gray-400 animate-bounce"
+                             fill="#3a923c" viewBox="0 0 384 512"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM155.7 250.2L192 302.1l36.3-51.9c7.6-10.9 22.6-13.5 33.4-5.9s13.5 22.6 5.9 33.4L221.3 344l46.4 66.2c7.6 10.9 5 25.8-5.9 33.4s-25.8 5-33.4-5.9L192 385.8l-36.3 51.9c-7.6 10.9-22.6 13.5-33.4 5.9s-13.5-22.6-5.9-33.4L162.7 344l-46.4-66.2c-7.6-10.9-5-25.8 5.9-33.4s25.8-5 33.4 5.9z"/>
+                        </svg>
+                        <span class="mt-2 block text-sm font-semibold text-gray-900">{{file.name}}</span>
+                        <button (click)="refreshUpload()" class="absolute bottom-0 right-0 ">
+                            <svg aria-hidden="true" class="mx-auto h-10 w-10 text-gray-400"
+                                 fill="none" stroke="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="mt-2">
+                        <input #inputFile (change)="onChange($event)" class="hidden" type="file"/>
+
+                        <p *ngIf="form.get('file')?.errors?.['serverError']" class="text-xs text-red-500">
+                            {{ form.get('file')?.errors?.['serverError'] }}
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="my-2 px-6 mr-2 flex items-center justify-end gap-x-6">
+            <button
+                (click)="toggleModal()"
+                class="text-sm font-semibold leading-6 text-gray-900" type="button" >{{'Cancel'|translate}}
+            </button>
+            <button
+                [disabled]="!(form.valid) && uploadProgression == true"
+                [ngClass]="form.valid ? 'bg-blue-600 hover:bg-blue-500':  'bg-gray-200 hover:bg-gray-200'"
+                class="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-s focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                type="submit" >
+                {{'Import'|translate}}
+            </button>
+        </div>
+    </form>
+</app-shared-modal>
+<ng-template #itemsloader>
+    <div class="max-w-sm animate-pulse" role="status">
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-ful mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+        <span class="sr-only">{{'Loading'|translate}}...</span>
+    </div>
+</ng-template>

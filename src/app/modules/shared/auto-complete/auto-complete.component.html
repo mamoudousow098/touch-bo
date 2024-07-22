@@ -1,0 +1,42 @@
+<div>
+    <div class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700" id="tooltip-agent-creation"
+         role="tooltip">
+        Create Agent
+        <div class="tooltip-arrow" data-popper-arrow></div>
+    </div>
+    <app-shared-modal [show]="displayModal">
+        <div class="px-4 sm:px-6 lg:px-8 py-4">
+                <div class="space-y-12">
+                    <form  [formGroup]="form" class="w-full items-center">
+                    <div class="border-b border-gray-900/10 pb-12">
+                        <div class="grid grid-cols-2 gap-5 mt-5">
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium leading-6 text-gray-900" >Wholesaler</label>
+                                <div class="mt-2">
+
+
+
+                                    <input value="{{form.get('codeWholesaler')?.value}}" class="p-1.5 border rounded text-sm" placeholder="Search Wholesaler" type="text" (input)="onCodeWholesalerChange($event)">
+
+                                    <div>
+                                        <button  class ="w-full" *ngFor="let wholesaler of filteredWholesalers" (click)="changeWholesaler(wholesaler.codeWholesaler)">
+                                            {{ wholesaler.codeWholesaler }}
+                                        </button>
+                                    </div>
+                                    <p *ngIf="form.get('codeWholesaler')?.errors?.['serverError']"
+                                       class="text-xs text-red-500">
+                                        {{ form.get('codeWholesaler')?.errors?.['serverError'] }}
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+        </div>
+    </app-shared-modal>
+
+</div>

@@ -1,0 +1,21 @@
+<div class="border-b border-gray-200 dark:border-gray-700">
+    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+        <li (click)="selectTab(tab)" *ngFor="let tab of tabs" class="mr-2">
+            <a
+                [class.active.border-blue-500]="tab.active"
+                class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group">
+                <svg [class.text-blue-500]="tab.active"
+                     class="w-4 h-4 mr-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300"
+                     fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm1-14.07a1 1 0 0 1 1.2.718l1.903 6.786 5.77 1.395a1 1 0 0 1 .608 1.676l-4.927 5.24 1.126 6.452a1 1 0 0 1-1.45 1.054l-5.62-3.05-5.62 3.05a1 1 0 0 1-1.45-1.054l1.125-6.452-4.927-5.24a1 1 0 0 1 .608-1.676l5.77-1.395 1.903-6.786a1 1 0 0 1 1.203-.718z"/>
+                </svg>
+                <span [ngClass]="{'text-blue-500 class.font-bold' : tab.active}">{{ tab.title }}</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="p-2">
+    <ng-content></ng-content>
+</div>

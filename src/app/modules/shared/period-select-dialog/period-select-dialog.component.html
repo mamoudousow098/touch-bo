@@ -1,0 +1,55 @@
+<button class=" justify-self-start flex my-2" (click)="toggleDisplay()">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+      </svg>
+    <span *ngIf="period > 0" class="font-normal ml-3 block truncate">
+    {{'Last'|translate}} {{period}} {{'Days'|translate}}
+    </span>
+    <span *ngIf="period==-1" class="font-normal ml-3 block truncate">
+       {{'Ever'|translate}}
+    </span>
+</button>
+
+<ul #container
+    [hidden]="hide"
+    class="absolute z-10 mt-1 max-h-60 w-fit overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+    tabindex="-1"
+    role="listbox"
+    aria-labelledby="listbox-label"
+    aria-activedescendant="listbox-option-3">
+    <li class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9" id="listbox-option-0" role="option">
+    <button (click)="changePeriod(7)" class="flex items-center">
+        <span class="font-normal ml-3 block truncate">
+        {{'Last 7 Days'|translate}}
+        </span>
+    </button>
+    </li>
+    <li class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9" id="listbox-option-0" role="option">
+        <button (click)="changePeriod(30)" class="flex items-center">
+        <span class="font-normal ml-3 block truncate">
+          {{'Last 30 Days'|translate}}
+        </span>
+        </button>
+    </li>
+    <li class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9" id="listbox-option-0" role="option">
+        <button (click)="changePeriod(90)" class="flex items-center">
+        <span class="font-normal ml-3 block truncate">
+            {{'Last 90 Days'|translate}}
+        </span>
+        </button>
+    </li>
+    <li class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9" id="listbox-option-0" role="option">
+        <button (click)="changePeriod(180)" class="flex items-center">
+            <span class="font-normal ml-3 block truncate">
+            {{'Last 180 Days'|translate}}
+            </span>
+        </button>
+    </li>
+    <li *ngIf="ever" class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9" id="listbox-option-0" role="option">
+        <button (click)="changePeriod(-1)" class="flex items-center">
+            <span class="font-normal ml-3 block truncate">
+           {{'Ever'|translate}}
+            </span>
+        </button>
+    </li>
+</ul>

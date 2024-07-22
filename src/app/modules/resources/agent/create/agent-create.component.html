@@ -1,0 +1,214 @@
+<div>
+    <span *ngIf="keycloakService.isUserInRole(Permissions.STORE_AGENT) || keycloakService.isUserInRole(Permissions.UPLOAD_AGENT)"
+    class="relative inline-flex items-center rounded-md bg-white px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300">
+        <div class="relative inline-flex items-center border-r pr-3 hover:bg-gray-50 focus:z-10"
+            type="button">
+            <span class="sr-only"  >{{'Create'|translate}}</span>
+            <button *ngIf="keycloakService.isUserInRole(Permissions.STORE_AGENT)"
+                (click)="toggleModal()"
+                class="rounded-full bg-blue-500 p-1 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                data-tooltip-target="tooltip-agent-creation"
+                type="button">
+                <svg aria-hidden="true" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/>
+                </svg>
+            </button>
+        </div>
+        <div *ngIf="keycloakService.isUserInRole(Permissions.UPLOAD_AGENT) "
+            class="relative inline-flex items-center border-l pl-3 hover:bg-gray-50 focus:z-10"
+            type="button">
+            <span class="sr-only" >{{'Import'|translate}}</span>
+            <app-import-excel/>
+        </div>
+    </span>
+    <div class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700" id="tooltip-agent-creation"
+        role="tooltip">
+        {{'Create Customer'|translate}}
+        <div class="tooltip-arrow" data-popper-arrow></div>
+    </div>
+    <app-shared-modal [show]="displayModal">
+        <div class="px-4 sm:px-6 lg:px-8 py-4">
+            <form (ngSubmit)="create()" [formGroup]="form" class="w-full items-center">
+                <div class="space-y-12">
+                    <div class="border-b border-gray-900/10 pb-12">
+                        <h2 class="text-base font-semibold leading-7 text-gray-900">{{'Create a new customer'|translate}}</h2>
+
+                        <div class="grid grid-cols-2 gap-5 mt-5">
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium leading-6 text-gray-900" >{{'Wholesaler'|translate}}</label>
+                                <div class="mt-2">
+                                   <!-- <select (change)="changeWholesaler($event)"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                            formControlName="codeWholesaler"
+                                            id="codeWholesaler">
+                                        <option value="">Select a wholesaler</option>
+                                        <option *ngFor="let wholesaler of wholesalers"
+                                                [value]="wholesaler.codeWholesaler">{{ wholesaler.description }}</option>
+                                    </select>-->
+<!--
+                                    <div class="sm:flex-auto ">
+                                        <div class="inline-flex">
+                                            <h1 class="text-base font-semibold leading-6 text-gray-900 pr-5 py-2">Agent</h1>
+                                            <app-auto-complete *ngIf="wholesalers$ | async as response" [wholesalers]="response.data"/>
+                                        </div>
+                                        <p class="mt-2 text-sm text-gray-700">A list of all agents.</p>
+                                    </div>-->
+
+                                    <div class="flex flex-col w-full">
+                                        <!-- Input field -->
+                                        <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                               value="{{ form.get('codeWholesaler')?.value }}"
+                                               placeholder="{{'Search Wholesaler'|translate}}"
+                                               type="text"
+                                               (input)="onCodeWholesalerChange($event)">
+
+                                        <!-- Container for wholesaler codes -->
+                                        <div class="bg-white shadow-md rounded-lg overflow-hidden w-full md:w-120 mt-2" style="max-height: 200px; overflow-y: auto;">
+                                            <div *ngFor="let wholesaler of filteredWholesalers"
+                                                 class="wholesaler-item cursor-pointer py-2 px-4 hover:bg-gray-100"
+                                                 (click)="changeWholesaler(wholesaler.codeWholesaler)">
+                                                {{ wholesaler.codeWholesaler }}
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+
+                                    <p *ngIf="form.get('codeWholesaler')?.errors?.['serverError']"
+                                       class="text-xs text-red-500">
+                                        {{ form.get('codeWholesaler')?.errors?.['serverError'] }}
+                                    </p>
+
+                                </div>
+                            </div>
+
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium leading-6 text-gray-900" for="codeAgent" >
+                                    {{'User Code'|translate}}</label>
+                                <div class="mt-2">
+                                    <input
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                        formControlName="codeAgent"
+                                        id="codeAgent"
+                                        type="text">
+                                    <p *ngIf="form.get('codeAgent')?.errors?.['serverError']" class="text-xs text-red-500">
+                                        {{ form.get('codeAgent')?.errors?.['serverError'] }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium leading-6 text-gray-900"
+                                    for="overdraftMaxDailyCount" >{{'Max daily overdraft count'|translate}}
+                                    </label>
+                                <div class="mt-2">
+                                    <input
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                        formControlName="overdraftMaxDailyCount"
+                                        id="overdraftMaxDailyCount"
+                                        type="text">
+                                    <p *ngIf="form.get('overdraftMaxDailyCount')?.errors?.['serverError']"
+                                    class="text-xs text-red-500">
+                                        {{ form.get('overdraftMaxDailyCount')?.errors?.['serverError'] }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium leading-6 text-gray-900" for="overdraftLimitAmount" >
+                                    {{'Overdraft limit amount'|translate}}</label>
+                                <div class="mt-2">
+                                    <input
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                        formControlName="overdraftLimitAmount"
+                                        id="overdraftLimitAmount"
+                                        type="text">
+                                    <p *ngIf="form.get('overdraftLimitAmount')?.errors?.['serverError']"
+                                    class="text-xs text-red-500">
+                                        {{ form.get('overdraftLimitAmount')?.errors?.['serverError'] }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium leading-6 text-gray-900" for="overdraftLimitAmount" >
+                                    {{'Overdraft Billing Occurrence'|translate}} </label>
+                                <div class="mt-2">
+                                    <input
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                        formControlName="overdraftBillingOccurrence"
+                                        id="overdraftBillingOccurrence"
+                                        type="text">
+                                    <p *ngIf="form.get('overdraftBillingOccurrence')?.errors?.['serverError']"
+                                    class="text-xs text-red-500">
+                                        {{ form.get('overdraftBillingOccurrence')?.errors?.['serverError'] }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium leading-6 text-gray-900" for="maxCreditRequestAmount">{{'Maximum amount by credit request'|translate}}</label>
+                                <div class="mt-2">
+                                    <input
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                        formControlName="maxCreditRequestAmount"
+                                        id="maxCreditRequestAmount"
+                                        type="number">
+                                    <p *ngIf="form.get('maxCreditRequestAmount')?.errors?.['serverError']"
+                                    class="text-xs text-red-500">
+                                        {{ form.get('maxCreditRequestAmount')?.errors?.['serverError'] }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium leading-6 text-gray-900" for="penaltyDelayInDays">Penalty
+                                    Delay (In days)</label>
+                                <div class="mt-2">
+                                    <input
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                        formControlName="penaltyDelayInDays"
+                                        id="penaltyDelayInDays"
+                                        type="text">
+                                    <p *ngIf="form.get('penaltyDelayInDays')?.errors?.['serverError']"
+                                    class="text-xs text-red-500">
+                                        {{ form.get('penaltyDelayInDays')?.errors?.['serverError'] }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium leading-6 text-gray-900" for="description">Description</label>
+                                <div class="mt-2">
+                                    <textarea
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                        formControlName="description"
+                                        id="description"
+                                        rows="3"></textarea>
+                                    <p *ngIf="form.get('description')?.errors?.['serverError']"
+                                    class="text-xs text-red-500">
+                                        {{ form.get('description')?.errors?.['serverError'] }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex items-center justify-end gap-x-6">
+                    <button
+                        (click)="toggleModal()"
+                        class="text-sm font-semibold leading-6 text-gray-900" type="button" >
+                        {{'Cancel'|translate}}
+                    </button>
+                    <button
+                        [disabled]="!form.valid || formDisabled"
+                        [ngClass]="!form.valid || formDisabled? 'bg-gray-400':'bg-blue-600 hover:bg-blue-500 focus-visible:outline-blue-600'"
+                        class="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 "
+                        type="submit" >
+                        {{'Save'|translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </app-shared-modal>
+
+</div>

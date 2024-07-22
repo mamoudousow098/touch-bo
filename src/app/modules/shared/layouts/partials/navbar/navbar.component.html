@@ -1,0 +1,89 @@
+<div
+    class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+    <button (click)="sideBarOpen()" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" type="button">
+        <span class="sr-only">Open sidebar</span>
+        <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5"
+             viewBox="0 0 24 24">
+            <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <div aria-hidden="true" class="h-6 w-px bg-gray-900/10 lg:hidden"></div>
+
+    <div class="flex flex-row-reverse flex-1 gap-x-4 self-stretch lg:gap-x-6">
+        <div class="flex  items-center gap-x-4 lg:gap-x-6">
+            <button class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500" type="button">
+                <span class="sr-only">View notifications</span>
+                <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5"
+                     viewBox="0 0 24 24">
+                    <path
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <!-- Separator -->
+            <div aria-hidden="true" class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"></div>
+
+            <!-- Profile dropdown -->
+            <div class="relative">
+                <button (mouseenter)="toggleDropdown()"
+                        aria-expanded="false"
+                        aria-haspopup="true" class="-m-1.5 flex items-center p-1.5" id="user-menu-button"
+                        type="button">
+                    <span class="sr-only">Open customer menu</span>
+
+                    <svg class="h-8 w-8 text-gray-500" fill="none" stroke="currentColor"
+                         stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                    </svg>
+
+                    <span class="hidden lg:flex lg:items-center">
+                        <span aria-hidden="true"
+                              class="ml-4 text-sm font-semibold leading-6 text-gray-900">{{ username }}</span>
+                        <svg *ngIf="!profileDropdown" aria-hidden="true" class="ml-2 h-5 w-5 text-gray-400"
+                             fill="currentColor" viewBox="0 0 20 20">
+                          <path clip-rule="evenodd"
+                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                fill-rule="evenodd"/>
+                        </svg>
+                        <svg *ngIf="profileDropdown" class="ml-2 h-5 w-4 text-gray-400"
+                             fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                             xmlns="http://www.w3.org/2000/svg">
+                          <path d="M4.5 15.75l7.5-7.5 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+
+                    </span>
+                </button>
+
+                <div (mouseleave)="toggleDropdown()"
+                     *ngIf="profileDropdown"
+                     aria-labelledby="user-menu-button"
+                     aria-orientation="vertical"
+                     class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                     role="menu" tabindex="-1">
+                    <!-- Active: "bg-gray-50", Not Active: "" -->
+                    <!--<a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-0">Your profile</a>-->
+
+                    <a (click)="logout()" class="cursor-pointer block px-3 py-1 text-sm leading-6 text-gray-900"
+                       id="user-menu-item-1" role="menuitem" tabindex="-1">Sign out</a>
+
+                </div>
+
+            </div>
+            <div class="relative">
+                <select class="block mt-2 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                (change)="ChangeLang($event)">
+                    <option [selected]="lang==='en'" value="en">🇺🇸&emsp;{{'English'|translate}}</option>
+                    <option [selected]="lang==='fr'" value="fr">🇫🇷&emsp;{{'French'|translate}}</option>
+                    <!-- Add other languages as options -->
+                </select>
+
+            </div>
+        </div>
+    </div>
+</div>

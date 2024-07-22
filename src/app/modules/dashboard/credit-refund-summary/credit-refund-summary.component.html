@@ -1,0 +1,54 @@
+<div class="flex justify-end">
+    <app-period-select-dialog (onPeriodChange)="onPeriodChange($event)" [defaultPeriod]="7"/>
+</div>
+
+<div class=" h-[300px] md:h-[300px] lg:h-[300px] grid grid-cols-1 sm:grid-cols-3">
+    <div class="col-span-1 sm:col-span-2">
+        <canvas id="creditRefundSummary"></canvas>
+    </div>
+    <div class="py-5 bg-white px-3">
+        <div class="m-4">
+            <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-500 dark:text-white" >{{'Overdraft part'|translate}}</span>
+                <span class="text-sm font-medium text-lime-500 dark:text-white" *ngIf="data$ | async as nanoCredit  ; else textLoader">{{overdraftRequestPart}}</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div class="bg-lime-500 h-2.5 rounded-full" [ngStyle]="{width: overdraftRequestPart}"></div>
+            </div>
+        </div>
+        <div class="m-4">
+            <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-500 dark:text-white" >{{'Nano credit part'|translate}}</span>
+                <span class="text-sm font-medium text-green-500 dark:text-white" *ngIf="data$ | async as nanoCredit  ; else textLoader">{{nanoCreditRequestPart}}</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div class="bg-green-500 h-2.5 rounded-full" [ngStyle]="{width: nanoCreditRequestPart}"></div>
+            </div>
+        </div>
+        <div class="m-4">
+            <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-500 dark:text-white" >{{'Overdraft recovered'|translate}}</span>
+                <span class="text-sm font-medium text-green-500 dark:text-white" *ngIf="data$ | async as nanoCredit  ; else textLoader">{{overdraftRefundPart}}</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div class="bg-yellow-500 h-2.5 rounded-full" [ngStyle]="{width: overdraftRefundPart}"></div>
+            </div>
+        </div>
+        <div class="m-4">
+            <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-500 dark:text-white" >{{'Nano Credit recovered'|translate}}</span>
+                <span class="text-sm font-medium text-amber-500 dark:text-white" *ngIf="data$ | async as nanoCredit  ; else textLoader">{{nanoCreditRefundPart}}</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div class="bg-amber-500 h-2.5 rounded-full" [ngStyle]="{width: nanoCreditRefundPart}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #textLoader>
+    <div class="max-w-sm animate-pulse grid justify-items-stretch" role="status">
+        <div class="h-3 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-2.5 justify-self-end"></div>
+    </div>
+</ng-template>

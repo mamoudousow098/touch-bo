@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.dropdown {
+    height: 38px;
+    width: 140px;
+    font-size: 14px;
+    border-radius: 5px;
+}

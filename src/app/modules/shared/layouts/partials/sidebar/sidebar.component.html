@@ -1,0 +1,476 @@
+<div *ngIf="showMobileSideBar" aria-modal="true" class="relative z-50 lg:hidden" role="dialog">
+    <div class="fixed inset-0 bg-gray-900/80"></div>
+
+    <div class="fixed inset-0 flex">
+        <div class="relative mr-16 flex w-full max-w-xs flex-1">
+            <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+                <button (click)="toggleSidebar()" class="-m-2.5 p-2.5" type="button">
+                    <span class="sr-only">Close sidebar</span>
+                    <svg aria-hidden="true" class="h-6 w-6 text-white" fill="none" stroke="currentColor"
+                         stroke-width="1.5" viewBox="0 0 24 24">
+                        <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Sidebar component, swap this element with another sidebar if you like -->
+            <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
+                <div class="flex h-16 shrink-0 justify-center p-3">
+                    <img alt="Credit digital"
+                         class="h-12 w-auto"
+                         src="https://intouchgroup.net/wp-content/themes/intouch-clarity/assets/img/Logo-Touch-Point.svg">
+                </div>
+                <nav class="flex flex-1 flex-col">
+                    <ul class="flex flex-1 flex-col gap-y-7" role="list">
+                        <li>
+                            <ul class="-mx-2 space-y-1" role="list">
+                                <li>
+                                    <a  class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/"
+                                       routerLinkActive="bg-gray-800 text-white">
+                                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.5" viewBox="0 0 24 24">
+                                            <path
+                                                d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+                                        {{'Dashboard'|translate}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li *ngIf="(keycloakService.isUserInRole(Permissions.INDEX_AGGREGATOR)
+                        || keycloakService.isUserInRole(Permissions.INDEX_LENDER)
+                        || keycloakService.isUserInRole(Permissions.INDEX_WHOLESALER)
+                        || keycloakService.isUserInRole(Permissions.INDEX_AGENT)
+                        )">
+                            <div class="text-xs font-semibold leading-6 text-gray-400" >{{'Resources'|translate}}</div>
+                            <ul class="-mx-2 mt-2 space-y-1" role="list">
+                                <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_LENDER)">
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/lender"
+                                       routerLinkActive="bg-gray-800 text-white">
+                                        <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                             stroke-width="1.5" viewBox="0 0 24 24"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+                                        <span class="truncate" >{{'Lenders'|translate}}</span>
+                                    </a>
+                                </li>
+                                <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_AGGREGATOR)">
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/aggregator"
+                                       routerLinkActive="bg-gray-800 text-white">
+                                        <svg class="w-6 h-6 shrink-0 text-white" fill="none" viewBox="0 0 20 20"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M5 2C6.65685 2 8 3.34315 8 5C8 6.4865 6.91886 7.72048 5.5 7.95852V10H11C11.8284 10 12.5 9.32843 12.5 8.5V7.95852C11.0811 7.72048 10 6.4865 10 5C10 3.34315 11.3431 2 13 2C14.6569 2 16 3.34315 16 5C16 6.4865 14.9189 7.72048 13.5 7.95852V8.5C13.5 9.88071 12.3807 11 11 11H5.5V12.0415C6.91886 12.2795 8 13.5135 8 15C8 16.6569 6.65685 18 5 18C3.34315 18 2 16.6569 2 15C2 13.5135 3.08114 12.2795 4.5 12.0415V7.95852C3.08114 7.72048 2 6.4865 2 5C2 3.34315 3.34315 2 5 2ZM3 5C3 6.10457 3.89543 7 5 7C6.10457 7 7 6.10457 7 5C7 3.89543 6.10457 3 5 3C3.89543 3 3 3.89543 3 5ZM3 15C3 16.1046 3.89543 17 5 17C6.10457 17 7 16.1046 7 15C7 13.8954 6.10457 13 5 13C3.89543 13 3 13.8954 3 15ZM13 7C14.1046 7 15 6.10457 15 5C15 3.89543 14.1046 3 13 3C11.8954 3 11 3.89543 11 5C11 6.10457 11.8954 7 13 7ZM12.5 13C11.1193 13 10 14.1193 10 15.5C10 16.8807 11.1193 18 12.5 18H13C13.2761 18 13.5 17.7761 13.5 17.5C13.5 17.2239 13.2761 17 13 17H12.5C11.6716 17 11 16.3284 11 15.5C11 14.6716 11.6716 14 12.5 14H13C13.2761 14 13.5 13.7761 13.5 13.5C13.5 13.2239 13.2761 13 13 13H12.5ZM16 13C15.7239 13 15.5 13.2239 15.5 13.5C15.5 13.7761 15.7239 14 16 14H16.5C17.3284 14 18 14.6716 18 15.5C18 16.3284 17.3284 17 16.5 17H16C15.7239 17 15.5 17.2239 15.5 17.5C15.5 17.7761 15.7239 18 16 18H16.5C17.8807 18 19 16.8807 19 15.5C19 14.1193 17.8807 13 16.5 13H16ZM12 15.5C12 15.2239 12.2239 15 12.5 15H16.5C16.7761 15 17 15.2239 17 15.5C17 15.7761 16.7761 16 16.5 16H12.5C12.2239 16 12 15.7761 12 15.5Z"
+                                                fill="currentColor"/>
+                                        </svg>
+                                        <span class="truncate" >{{'Aggregators'|translate}}</span>
+                                    </a>
+                                </li>
+                                <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_WHOLESALER)">
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/wholesaler"
+                                       routerLinkActive="bg-gray-800 text-white">
+                                        <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                             stroke-width="1.5" viewBox="0 0 24 24"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+                                        <span class="truncate" >{{'Wholesalers'|translate}}</span>
+                                    </a>
+                                </li>
+                                <li  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_AGENT)">
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/agent"
+                                       routerLinkActive="bg-gray-800 text-white">
+                                        <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                             stroke-width="1.5" viewBox="0 0 24 24"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+                                        <span class="truncate">{{'Customers'|translate}}</span>
+                                    </a>
+                                </li>
+                                <li  *ngIf="keycloakService.isUserInRole(Permissions.GET_ALL_SUPPLIER)">
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/supplier"
+                                       routerLinkActive="bg-gray-800 text-white">
+                                       <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                            stroke-width="1.5" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M8.25 9.75h4.875a2.625 2.625 0 0 1 0 5.25H12M8.25 9.75 10.5 7.5M8.25 9.75 10.5 12m9-7.243V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185Z"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+                                        <span class="truncate">{{'Suppliers'|translate}}</span>
+                                    </a>
+                                </li>
+                                
+                                <li  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_PRODUCT)">
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/product"
+                                       routerLinkActive="bg-gray-800 text-white">
+                                       <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                            stroke-width="1.5" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+                                        <span class="truncate">{{'Products'|translate}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_CREDIT_REQUEST)
+                        || keycloakService.isUserInRole(Permissions.INDEX_REFUND_REQUEST)
+                        || keycloakService.isUserInRole(Permissions.INDEX_VALIDATION_OPERATION)">
+                            <div class="text-xs font-semibold leading-6 text-gray-400">{{'Overviews'|translate}}</div>
+                            <ul class="-mx-2 mt-2 space-y-1" role="list">
+                                <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_CREDIT_REQUEST) && !keycloakService.isUserInRole(Permissions.INDEX_VALIDATION_OPERATION) ">
+                                    <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/overview/credit-request"
+                                       routerLinkActive="bg-gray-800 text-white"
+                                       [routerLinkActiveOptions]="{ exact: true }">
+
+                                        <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                             stroke-width="1.5"
+                                             viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+
+                                        <span class="truncate" >{{'Credit Requests'|translate}}</span>
+                                    </a>
+                                </li>
+                                <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_CREDIT_REQUEST_PRODUCT) && !keycloakService.isUserInRole(Permissions.INDEX_VALIDATION_OPERATION) ">
+                                    <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/overview/credit-request/product"
+                                       routerLinkActive="bg-gray-800 text-white"
+                                       [routerLinkActiveOptions]="{ exact: true }">
+        
+                                        <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                             stroke-width="1.5"
+                                             viewBox="0 0 24 24">
+                                            <path d="M4 11h16v2H4z" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M12 3c1.657 0 3 1.343 3 3s-1.343 3-3 3-3-1.343-3-3 1.343-3 3-3zm0 0V1m0 4V3m6 10v6a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-6" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M10 21v2m4-2v2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M6 15l4-4 4 4m0-6l4-4-4-4m0 4h-8v2h8" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+        
+        
+        
+        
+                                        <span class="truncate" >{{'Credit Requests Product'|translate}}</span>
+                                    </a>
+                                </li>
+                                <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_VALIDATION_OPERATION) ">
+                                    <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/overview/nano-credit"
+                                       routerLinkActive="bg-gray-800 text-white">
+
+                                        <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                             stroke-width="1.5"
+                                             viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+
+                                        <span class="truncate" >{{'Nano Credit'|translate}}</span>
+                                    </a>
+                                </li>
+                                <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_REFUND_REQUEST)">
+                                    <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
+                                    <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                       routerLink="/overview/refund-request"
+                                       routerLinkActive="bg-gray-800 text-white">
+                                        <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                             stroke-width="1.5"
+                                             viewBox="0 0 24 24">
+                                            <path
+                                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+                                        <span class="truncate" >{{'Refund Requests'|translate}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+
+
+                        <li class="mt-auto">
+                            <a  class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                                routerLink="/settings/currency/rate"
+                                routerLinkActive="bg-gray-800 text-white">
+                                <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                     stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path
+                                        d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"
+                                          stroke-linejoin="round"/>
+                                </svg>
+                                {{'Settings'|translate}}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Static sidebar for desktop -->
+<div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+    <!-- Sidebar component, swap this element with another sidebar if you like -->
+    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
+        <div class="flex h-16 shrink-0 justify-center p-3">
+            <img alt="Credit digital"
+                 class="h-12 w-auto"
+                 src="https://intouchgroup.net/wp-content/themes/intouch-clarity/assets/img/Logo-Touch-Point.svg">
+        </div>
+        <nav class="flex flex-1 flex-col">
+            <ul class="flex flex-1 flex-col gap-y-7" role="list">
+                <li>
+                    <ul class="-mx-2 space-y-1" role="list">
+                        <li>
+                            <a  class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/"
+                               routerLinkActive="bg-gray-800 text-white">
+                                <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                     stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path
+                                        d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+                                {{'Dashboard'|translate}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li *ngIf="(keycloakService.isUserInRole(Permissions.INDEX_AGGREGATOR)
+                        || keycloakService.isUserInRole(Permissions.INDEX_LENDER)
+                        || keycloakService.isUserInRole(Permissions.INDEX_WHOLESALER)
+                        || keycloakService.isUserInRole(Permissions.INDEX_AGENT))">
+                    <div class="text-xs font-semibold leading-6 text-gray-400">{{'Resources'|translate}}</div>
+                    <ul class="-mx-2 mt-2 space-y-1" role="list">
+                        <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_LENDER)">
+                            <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/lender"
+                               routerLinkActive="bg-gray-800 text-white">
+                                <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                     stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+
+                                <span class="truncate" >{{'Lenders'|translate}}</span>
+                            </a>
+                        </li>
+                        <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_AGGREGATOR)">
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/aggregator"
+                               routerLinkActive="bg-gray-800 text-white">
+                                <svg class="w-6 h-6 shrink-0 text-white" fill="none" viewBox="0 0 20 20"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M5 2C6.65685 2 8 3.34315 8 5C8 6.4865 6.91886 7.72048 5.5 7.95852V10H11C11.8284 10 12.5 9.32843 12.5 8.5V7.95852C11.0811 7.72048 10 6.4865 10 5C10 3.34315 11.3431 2 13 2C14.6569 2 16 3.34315 16 5C16 6.4865 14.9189 7.72048 13.5 7.95852V8.5C13.5 9.88071 12.3807 11 11 11H5.5V12.0415C6.91886 12.2795 8 13.5135 8 15C8 16.6569 6.65685 18 5 18C3.34315 18 2 16.6569 2 15C2 13.5135 3.08114 12.2795 4.5 12.0415V7.95852C3.08114 7.72048 2 6.4865 2 5C2 3.34315 3.34315 2 5 2ZM3 5C3 6.10457 3.89543 7 5 7C6.10457 7 7 6.10457 7 5C7 3.89543 6.10457 3 5 3C3.89543 3 3 3.89543 3 5ZM3 15C3 16.1046 3.89543 17 5 17C6.10457 17 7 16.1046 7 15C7 13.8954 6.10457 13 5 13C3.89543 13 3 13.8954 3 15ZM13 7C14.1046 7 15 6.10457 15 5C15 3.89543 14.1046 3 13 3C11.8954 3 11 3.89543 11 5C11 6.10457 11.8954 7 13 7ZM12.5 13C11.1193 13 10 14.1193 10 15.5C10 16.8807 11.1193 18 12.5 18H13C13.2761 18 13.5 17.7761 13.5 17.5C13.5 17.2239 13.2761 17 13 17H12.5C11.6716 17 11 16.3284 11 15.5C11 14.6716 11.6716 14 12.5 14H13C13.2761 14 13.5 13.7761 13.5 13.5C13.5 13.2239 13.2761 13 13 13H12.5ZM16 13C15.7239 13 15.5 13.2239 15.5 13.5C15.5 13.7761 15.7239 14 16 14H16.5C17.3284 14 18 14.6716 18 15.5C18 16.3284 17.3284 17 16.5 17H16C15.7239 17 15.5 17.2239 15.5 17.5C15.5 17.7761 15.7239 18 16 18H16.5C17.8807 18 19 16.8807 19 15.5C19 14.1193 17.8807 13 16.5 13H16ZM12 15.5C12 15.2239 12.2239 15 12.5 15H16.5C16.7761 15 17 15.2239 17 15.5C17 15.7761 16.7761 16 16.5 16H12.5C12.2239 16 12 15.7761 12 15.5Z"
+                                        fill="currentColor"/>
+                                </svg>
+                                <span class="truncate" >{{'Aggregators'|translate}}</span>
+                            </a>
+                        </li>
+                        <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_WHOLESALER)">
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/wholesaler"
+                               routerLinkActive="bg-gray-800 text-white">
+                                <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                     stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+                                <span class="truncate" >{{'Wholesalers'|translate}}</span>
+                            </a>
+                        </li>
+                        <li  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_AGENT)">
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/agent"
+                               routerLinkActive="bg-gray-800 text-white">
+                                <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                     stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+                                <span class="truncate">{{'Customers'|translate}}</span>
+                            </a>
+                        </li>
+                        <li  *ngIf="keycloakService.isUserInRole(Permissions.GET_ALL_SUPPLIER)">
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/supplier"
+                               routerLinkActive="bg-gray-800 text-white">
+                                <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                     stroke-width="1.5" viewBox="0 0 24 24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M8.25 9.75h4.875a2.625 2.625 0 0 1 0 5.25H12M8.25 9.75 10.5 7.5M8.25 9.75 10.5 12m9-7.243V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185Z"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+                                <span class="truncate">{{'Suppliers'|translate}}</span>
+                            </a>
+                        </li>
+                        
+                        <li  *ngIf="keycloakService.isUserInRole(Permissions.INDEX_PRODUCT)">
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/product"
+                               routerLinkActive="bg-gray-800 text-white">
+                                <svg class="w-6 h-6 shrink-0 text-white" fill="none" stroke="currentColor"
+                                     stroke-width="1.5" viewBox="0 0 24 24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+                                <span class="truncate">{{'Products'|translate}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_CREDIT_REQUEST)
+                        || keycloakService.isUserInRole(Permissions.INDEX_REFUND_REQUEST)
+                        || keycloakService.isUserInRole(Permissions.INDEX_VALIDATION_OPERATION)">
+                    <div class="text-xs font-semibold leading-6 text-gray-400" >{{'Overviews'|translate}}</div>
+                    <ul class="-mx-2 mt-2 space-y-1" role="list">
+                        <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_CREDIT_REQUEST) && !keycloakService.isUserInRole(Permissions.INDEX_VALIDATION_OPERATION)">
+                            <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/overview/credit-request"
+                               routerLinkActive="bg-gray-800 text-white"
+                               [routerLinkActiveOptions]="{ exact: true }">
+
+                                <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                     stroke-width="1.5"
+                                     viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+
+                                <span class="truncate" >{{'Credit Requests'|translate}}</span>
+                            </a>
+                        </li>
+                        <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_CREDIT_REQUEST_PRODUCT) && !keycloakService.isUserInRole(Permissions.INDEX_VALIDATION_OPERATION) ">
+                            <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/overview/credit-request/product"
+                               routerLinkActive="bg-gray-800 text-white"
+                               [routerLinkActiveOptions]="{ exact: true }">
+
+                                <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                     stroke-width="1.5"
+                                     viewBox="0 0 24 24">
+                                    <path d="M4 11h16v2H4z" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 3c1.657 0 3 1.343 3 3s-1.343 3-3 3-3-1.343-3-3 1.343-3 3-3zm0 0V1m0 4V3m6 10v6a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M10 21v2m4-2v2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M6 15l4-4 4 4m0-6l4-4-4-4m0 4h-8v2h8" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+
+
+
+
+                                <span class="truncate" >{{'Credit Requests Product'|translate}}</span>
+                            </a>
+                        </li>
+                        <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_VALIDATION_OPERATION)">
+                            <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/overview/nano-credit"
+                               routerLinkActive="bg-gray-800 text-white">
+
+                                <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                     stroke-width="1.5"
+                                     viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+
+                                <span class="truncate" >{{'Nano Credit'|translate}}</span>
+                            </a>
+                        </li>
+                        <li *ngIf="keycloakService.isUserInRole(Permissions.INDEX_REFUND_REQUEST)">
+                            <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
+                            <a class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                               routerLink="/overview/refund-request"
+                               routerLinkActive="bg-gray-800 text-white">
+                                <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                                     stroke-width="1.5"
+                                     viewBox="0 0 24 24">
+                                    <path
+                                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+                                <span class="truncate" >{{'Refund Requests'|translate}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="mt-auto">
+                    <a  class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                       routerLink="/settings/currency/rate"
+                        routerLinkActive="bg-gray-800 text-white">
+                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" stroke="currentColor"
+                             stroke-width="1.5" viewBox="0 0 24 24">
+                            <path
+                                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"/>
+                            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                       {{'Settings'|translate}}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

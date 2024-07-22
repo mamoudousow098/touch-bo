@@ -1,0 +1,51 @@
+steps:
+    -   name: gcr.io/cloud-builders/gcloud
+        args:
+            - '-c'
+            - >
+                sed -i 's/%SERVICE_NAME%/${_SERVICE_NAME}/g'
+                app.yaml
+
+                sed -i 's/%KEYCLOAK_REALM%/${_KEYCLOAK_REALM}/g'
+                .env.production
+
+                sed -i 's/%ENGINE_BASE_URL%/${_ENGINE_BASE_URL}/g'
+                .env.production
+
+                sed -i 's/%KEYCLOAK_RESOURCE%/${_KEYCLOAK_RESOURCE}/g'
+                .env.production
+
+                sed -i 's/%KEYCLOAK_SERVER_URL%/${_KEYCLOAK_SERVER_URL}/g'
+                .env.production
+
+                sed -i 's/%KEYCLOAK_REDIRECT_URL%/${_KEYCLOAK_REDIRECT_URL}/g'
+                .env.production
+
+                sed -i 's/%ACTIVE_LOGS%/${_ACTIVE_LOGS}/g'
+                .env.production
+
+                cat .env.production
+
+        id: Set application env
+        entrypoint: bash
+        
+
+    -   name: 'gcr.io/cloud-builders/npm:latest'
+        args:
+            - install
+    -   name: 'gcr.io/cloud-builders/npm:latest'
+        args:
+            - run
+            - build
+            - '--prod'
+
+    -   name: 'gcr.io/cloud-builders/gcloud'
+        entrypoint: 'bash'
+        args:
+            - '-c'
+            - 'ls -R'
+    -   name: gcr.io/cloud-builders/gcloud
+        args:
+            - app
+            - deploy
+            - '--version=prod'

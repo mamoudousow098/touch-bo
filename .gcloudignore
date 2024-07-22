@@ -1,0 +1,16 @@
+# If you would like to upload your .git directory, .gitignore file or
+# files from your .gitignore file, remove the corresponding line below:
+.git
+.gitignore
+# consider the dist file
+!dist/
+
+# skip files
+e2e/
+node_modules/
+src/
+coverage
+# ^(.*/)?\..*$
+# ^(.*/)?.*\.json$
+# ^(.*/)?.*\.md$
+^LICENSE
